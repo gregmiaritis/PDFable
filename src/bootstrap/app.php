@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\ApiTokenMidleware;
+use App\Http\Middleware\JsonRequestMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,7 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'api.token' => \App\Http\Middleware\ApiTokenMidleware::class,
+            'api.token' => ApiTokenMidleware::class,
+            'json' => JsonRequestMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

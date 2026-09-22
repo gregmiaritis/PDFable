@@ -2,28 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\GeneratePdfFromBase64Request;
+use App\Http\Requests\GeneratePdfFromUrlRequest;
+use App\Http\Requests\GeneratePdfRequest;
+use App\Services\PdfGenerator;
 use Illuminate\Http\Response;
-use Spatie\Browsershot\Browsershot;
 
 class PdfController extends Controller
 {
-    public function show(Request $request): Response
+    public function generateByHTML(GeneratePdfRequest $request, PdfGenerator $generator): Response
     {
-        // Accept either a raw text/html body or an `html` field (JSON / form).
-        $html = $request->isJson() || $request->has('html')
-            ? $request->validate(['html' => ['required', 'string']])['html']
-            : $request->getContent();
+        $pdf = $generator->fromHtml(
+            $request->validated('html'),
+            $request->validated('settings', []),
+        );
 
-        abort_if(blank($html), 422, 'No HTML provided.');
+        return $this->pdfResponse($pdf);
+    }
 
-        $pdf = Browsershot::html($html)
-            ->setChromePath('/usr/bin/chromium')
-            ->noSandbox()
-            ->format('A4')
-            ->showBackground()
-            ->pdf();
+    public function generateByUrl(GeneratePdfFromUrlRequest $request, PdfGenerator $generator): Response
+    {
+        $pdf = $generator->fromUrl(
+            $request->validated('url'),
+            $request->validated('settings', []),
+        );
 
+        return $this->pdfResponse($pdf);
+    }
+
+    public function generateByBase64(GeneratePdfFromBase64Request $request, PdfGenerator $generator): Response
+    {
+        $pdf = $generator->fromHtml(
+            $request->html(),
+            $request->validated('settings', []),
+        );
+
+        return $this->pdfResponse($pdf);
+    }
+
+    private function pdfResponse(string $pdf): Response
+    {
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="document.pdf"',
