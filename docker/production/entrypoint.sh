@@ -13,7 +13,6 @@ if [ -z "$PDF_API_TOKEN" ]; then
     exit 1
 fi
 
-# Cache config, routes, views and events using the runtime environment.
 php artisan optimize
 
 exec "$@"

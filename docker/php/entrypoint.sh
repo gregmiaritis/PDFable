@@ -3,7 +3,6 @@ set -e
 
 cd /var/www/html
 
-# Fresh clone: install dependencies and set up env
 if [ -f composer.json ] && [ ! -d vendor ]; then
     composer install --no-interaction --prefer-dist
 fi

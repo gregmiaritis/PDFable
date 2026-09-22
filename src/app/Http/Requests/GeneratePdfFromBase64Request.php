@@ -6,7 +6,6 @@ use Closure;
 
 class GeneratePdfFromBase64Request extends PdfRequest
 {
-    // Allow a data URI prefix, e.g. "data:text/html;base64,PGgxPi4uLg==".
     protected function prepareForValidation(): void
     {
         if (is_string($this->input('base64'))) {
