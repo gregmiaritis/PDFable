@@ -7,7 +7,6 @@ use Illuminate\Validation\Rule;
 
 abstract class PdfRequest extends ApiFormRequest
 {
-    /** Rules for the source of the PDF (html, url, ...). */
     abstract protected function sourceRules(): array;
 
     public function rules(): array
