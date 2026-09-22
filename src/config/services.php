@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'pdf_api' => [
+        'token' => env('PDF_API_TOKEN'),
+    ],
+
 ];
